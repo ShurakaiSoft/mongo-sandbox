@@ -60,19 +60,16 @@ module.exports = function(app) {
 	});
 	
 	app.post('/users', notLoggedIn, function (req, res) {
-		User.findOne({ username: req.body.username }, function (err, user) {
+		User.create(req.body, function (err) {
 			if (err) {
-				return next(err);
-			}
-			if (user) {
-				return res.send('Conflict', 409);
-			}
-			User.create(req.body, function (err) {
-				if (err) {
-					return next(err);
+				if (err.code === 11000) {
+					res.send('Conflict', 409);
+				} else {
+					next (err);
 				}
-				res.redirect('/users');
-			});
+				return;
+			}
+			res.redirect('/users');
 		});
 	});
 	
