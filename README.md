@@ -1,7 +1,12 @@
-express-sandbox
+# MongoDB -sandbox
 ===============
 
-Objective
+## Objective
 =========
 
-Some code to try out MongoDB
+A playground for trying out mongoDB with node.js
+
+## Source
+=========
+
+Code is inspired by "Professional Node.js" (by Pedro Teixeira) chapter 25.
