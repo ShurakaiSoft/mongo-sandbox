@@ -7,15 +7,32 @@ var notLoggedIn = require('./middleware/not_logged_in');
 var loadUser = require('./middleware/load_user');
 var restrictUserToSelf = require('./middleware/restrict_user_to_self');
 
+var maxUsersPerPage = 5;
+
 module.exports = function(app) {
 	
 	app.get('/users', function (req, res) {
-		User.find({}, function (err, users) {
-			if (err) {
-				return next(err);
-			}
-			res.render('users/index', { title: 'User Index', users: users });
+		var page = req.query.page && parseInt(req.query.page, 10) || 0;
+		User.count(function (err, count) {
+			var lastPage = (page + 1) * maxUsersPerPage >= count; 
+			User.find({})
+				.sort({'name': 1})
+				.skip(page * maxUsersPerPage)
+				.limit(maxUsersPerPage)
+				.exec(function (err, users) {
+				if (err) {
+					return next(err);
+				}
+				res.render('users/index', { 
+					title: 'User Index',
+					users: users,
+					page: page,
+					lastPage: lastPage
+				});
+			});
 		});
+		
+		
 	});
 	
 	app.get('/users/new', notLoggedIn, function (req, res) {
@@ -23,8 +40,8 @@ module.exports = function(app) {
 	});
 	
 	app.get('/users/:name', loadUser, restrictUserToSelf, function (req, res, next) {
-		var user = users[req.params.name];
-		if (user) {
+		console.log("should not be getting here");
+		if (req.user) {
 			res.render('users/profile', {title: 'User profile', user: req.user});
 		} else {
 			next();

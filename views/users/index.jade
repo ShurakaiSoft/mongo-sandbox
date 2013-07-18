@@ -8,5 +8,14 @@ block content
 	ul
 		- for(var username in users) {
 			li
-				a(href="/users/" + encodeURIComponent(username))= users[username].name
+				a(href="/users/" + encodeURIComponent(users[username].username))= users[username].name
 		- };
+		
+		- if (page > 0) {
+			a(href="?page=" + (page - 1)) Previous
+			&nbsp;
+		- }
+		
+		- if (!lastPage) {
+			a(href="?page=" + (page + 1)) Next
+		- }

@@ -2,10 +2,11 @@
  * Load fake user db
  */
 
-var users = require('../../data/models/user');
+var User = require('../../data/models/user');
 
 
 function loadUser(req, res, next) {
+	console.log("Loading user: %s", req.params.name);
 	User.findOne({ username: req.params.name}, function (err, user) {
 		if (err) {
 			return next(err);
