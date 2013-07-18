@@ -3,6 +3,9 @@
  * Module dependencies.
  */
 
+
+var dbURL = 'mongodb://localhost/database';
+var db = require('mongoose').connect(dbURL);
 var express = require('express')
   , http = require('http')
   , path = require('path');
