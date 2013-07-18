@@ -2,6 +2,7 @@
  * User routes
  */
 
+var async = require('async');
 var User = require('../data/models/user');
 var notLoggedIn = require('./middleware/not_logged_in');
 var loadUser = require('./middleware/load_user');
@@ -11,28 +12,38 @@ var maxUsersPerPage = 5;
 
 module.exports = function(app) {
 	
-	app.get('/users', function (req, res) {
+	app.get('/users', function (req, res, next) {
 		var page = req.query.page && parseInt(req.query.page, 10) || 0;
-		User.count(function (err, count) {
-			var lastPage = (page + 1) * maxUsersPerPage >= count; 
-			User.find({})
-				.sort({'name': 1})
-				.skip(page * maxUsersPerPage)
-				.limit(maxUsersPerPage)
-				.exec(function (err, users) {
-				if (err) {
-					return next(err);
-				}
-				res.render('users/index', { 
-					title: 'User Index',
-					users: users,
-					page: page,
-					lastPage: lastPage
-				});
+		
+		async.parallel([
+		    function (next) {
+		    	User.count(next);
+		    },
+		    function (next) {
+		    	User.find({})
+					.sort({'name': 1})
+					.skip(page * maxUsersPerPage)
+					.limit(maxUsersPerPage)
+					.exec(next);
+		    }
+        ], function (err, results) {
+			var count = 0;
+			var users = {};
+			var lastPage = 0;
+			
+			if (err) {
+				return next(err);
+			}
+			count = results[0];
+			users = results[1];
+			lastPage = (page + 1) * maxUsersPerPage >= count;
+			res.render('users/index', { 
+				title: 'User Index',
+				users: users,
+				page: page,
+				lastPage: lastPage
 			});
 		});
-		
-		
 	});
 	
 	app.get('/users/new', notLoggedIn, function (req, res) {
