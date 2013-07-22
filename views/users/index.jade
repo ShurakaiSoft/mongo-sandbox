@@ -6,10 +6,10 @@ block content
 	p
 		a(href="/users/new") Create new profile
 	ul
-		- for(var username in users) {
+		- users.forEach(function(user) {
 			li
-				a(href="/users/" + encodeURIComponent(users[username].username))= users[username].fullName
-		- };
+				a(href="/users/" + encodeURIComponent(user.username))= user.fullName
+		- });
 		
 		- if (page > 0) {
 			a(href="?page=" + (page - 1)) Previous
