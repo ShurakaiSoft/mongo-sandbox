@@ -18,7 +18,8 @@ var UserSchema = new mongoose.Schema({
 	password: String,
 	email: {
 		type: String,
-		required: true,
+		sparse: true,
+		unique: true,
 		match: emailRegex
 	},
 	gender: {
@@ -71,6 +72,11 @@ UserSchema.pre('save', function (next) {
 	}
 	this.meta.updatedAt = undefined;
 	next();
-})
+});
+
+UserSchema.index({
+	username: 1,
+	'meta.createdAt': -1
+});
 
 module.exports = UserSchema;
