@@ -32,6 +32,19 @@ var UserSchema = new mongoose.Schema({
 		validate: [
 		    validate13YearsOldOrMore,
 		    'you must be 13 years old or more']
+	},
+	meta: {
+		createdAt: {
+			type: Date,
+			'default': Date.now,
+			set: function (val) {
+				return undefined;
+			}
+		},
+		updatedAt: {
+			type: Date,
+			'default': Date.now
+		}
 	}
 });
 
@@ -50,5 +63,14 @@ UserSchema
 				first: nameComponents.join(' ')	// incase more than one first name
 		};
 	});
+
+
+UserSchema.pre('save', function (next) {
+	if (this.isNew) {
+		this.meta.createdAt = undefined;
+	}
+	this.meta.updatedAt = undefined;
+	next();
+})
 
 module.exports = UserSchema;
