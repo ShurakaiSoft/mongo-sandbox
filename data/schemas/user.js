@@ -16,6 +16,12 @@ var UserSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 		match: emailRegex
+	},
+	gender: {
+		type: String,
+		required: true,
+		uppercase: true,
+		'enum': ['M', 'F']
 	}
 });
 
