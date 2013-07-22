@@ -8,7 +8,7 @@ block content
 	ul
 		- for(var username in users) {
 			li
-				a(href="/users/" + encodeURIComponent(users[username].username))= users[username].name
+				a(href="/users/" + encodeURIComponent(users[username].username))= users[username].fullName
 		- };
 		
 		- if (page > 0) {

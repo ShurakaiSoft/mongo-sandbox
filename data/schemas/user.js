@@ -14,7 +14,10 @@ function validate13YearsOldOrMore(date) {
 
 var UserSchema = new mongoose.Schema({
 	username: { type: String, unique: true },
-	name: String,
+	name: {
+		first: String,
+		last: String
+	},
 	password: String,
 	email: {
 		type: String,
@@ -34,5 +37,16 @@ var UserSchema = new mongoose.Schema({
 		    'you must be 13 years old or more']
 	}
 });
+
+UserSchema
+	.virtual('fullName')
+	.get(function () {
+		return [this.name.first, this.name.last].join(' ');
+	})
+	.set(function (fullName) {
+		var nameComponents = fullName.split(' ');
+		this.name.last = nameComponents.pop();
+		this.name.first = nameComponents.join(' ');	// incase more than one first name
+	});
 
 module.exports = UserSchema;
