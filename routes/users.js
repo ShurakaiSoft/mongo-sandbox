@@ -65,7 +65,13 @@ module.exports = function(app) {
 				if (err.code === 11000) {
 					res.send('Conflict', 409);
 				} else {
-					next (err);
+					if (err.name === 'ValidationError')	 {
+						return res.send(Object.keys(err.errors).map(function (errField) {
+							return err.errors[errField].message;
+						}).join('.'), 406);
+					} else {
+						next (err);
+					}
 				}
 				return;
 			}
