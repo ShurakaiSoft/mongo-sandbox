@@ -79,4 +79,12 @@ UserSchema.index({
 	'meta.createdAt': -1
 });
 
+UserSchema.methods.recentArticles = function(callback) {
+	return this.model('Article')
+		.find({author: this._id})
+		.sort({'createdAt': 1})
+		.limit(5)
+		.exec(callback);
+};
+
 module.exports = UserSchema;

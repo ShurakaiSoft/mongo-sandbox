@@ -12,7 +12,7 @@ function loadArticle(req, res, next) {
 				return next(err);
 			}
 			if (!article) {
-				return res.send("Not Fount", 404);
+				return res.send("Not Found", 404);
 			}
 			req.article = article;
 			next();

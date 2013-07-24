@@ -11,3 +11,7 @@ block content
 	form(action="/users/" + encodeURIComponent(user.username), method="POST")
 		input(name="_method", type="hidden", value="DELETE")
 		input(type="submit", value="Delete")
+
+	h2 Recent Articles
+	
+		include ../articles/list.jade

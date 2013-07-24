@@ -2,7 +2,7 @@
  * article schema
  */
 
-var Schema = require('mongoose').schema;
+var Schema = require('mongoose').Schema;
 
 var ArticleSchema = new Schema({
 	title : {

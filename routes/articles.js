@@ -14,29 +14,29 @@ var maxArticlesPerPage = 5;
 module.exports = function (app) {
 	
 	app.get('/articles', function (req, res, next) {
-		var page = req.query.page && parseInt(req.query.page, 10) || 10;
+		var page = req.query.page && parseInt(req.query.page, 10) || 0;
 		async.parallel([
 		    function (next) {
 		    	Article.count(next);
 		    },
 		    function (next) {
 		    	Article.find({})
-		    		.sort('title', 1)
+		    		.sort({ 'title': 1} )
 		    		.skip(page * maxArticlesPerPage)
-		    		.limit(marArticlesPerPage)
+		    		.limit(maxArticlesPerPage)
 		    		.exec(next);
 		    }
 		], function (err, results) {
 			var count = 0;
-			var article = {};
+			var articles = {};
 			var lastPage = false;
 			
 			if (err) {
 				return next(err);
 			}
 			count = results[0];
-			article = results[1];
-			lastPage = (page + 1) * masArticlesPerPage >= count;
+			articles = results[1];
+			lastPage = (page + 1) * maxArticlesPerPage >= count;
 			res.render('articles/index', {
 				title: 'Articles',
 				articles: articles,
@@ -47,7 +47,7 @@ module.exports = function (app) {
 	});
 	
 	app.get('/articles/new', loggedIn, function (req, res) {
-		res.render('Articles/new', {
+		res.render('articles/new', {
 			title: 'New Article'
 		});
 	});

@@ -1,0 +1,18 @@
+extends ../layout
+
+block content
+	h1 Articles
+
+	p
+		a(href="/articles/new") Create new article
+
+	include list.jade
+
+	- if (page > 0) {
+		a(href="?page=" + (page - 1)) Previous
+		&nbsp;
+	- }
+	
+	- if (!lastPage) {
+		a(href="?page=" (page + 1)) Next
+	- }

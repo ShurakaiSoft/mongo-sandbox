@@ -51,12 +51,16 @@ module.exports = function(app) {
 	});
 	
 	app.get('/users/:name', loadUser, restrictUserToSelf, function (req, res, next) {
-		console.log("should not be getting here");
-		if (req.user) {
-			res.render('users/profile', {title: 'User profile', user: req.user});
-		} else {
-			next();
-		}
+		req.user.recentArticles(function (err, articles) {
+			if (err) {
+				return next(err);
+			}
+			res.render('users/profile', {
+				title: 'User Profile',
+				user: req.user,
+				articles: articles
+			});
+		});
 	});
 	
 	app.post('/users', notLoggedIn, function (req, res) {
